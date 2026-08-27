@@ -171,6 +171,7 @@
             box-shadow: 0 4px 10px rgba(0, 20, 30, 0.3);
             border: 2px solid #1b4b6e;
             cursor: pointer;
+            
             transition: 0.1s;
         }
         input[type="range"]::-webkit-slider-thumb:hover {
@@ -308,12 +309,13 @@
                 <span class="result-value result-total" id="totalDisplay">£0.00</span>
             </div>
             <div style="display: flex; justify-content: flex-end; margin-top: 0.2rem;">
-                <span style="opacity: 0.4; font-size: 0.7rem;">daily rate 0.1068%</span>
+                <span style="opacity: 0.4; font-size: 0.7rem;">daily rate 0.1068% </span>
+                <span style="opacity: 0.4; font-size: 0.7rem;"> Daily OD= (outstandind amount *  annual intrest rate )/365 </span>
             </div>
         </div>
 
         <div class="flex-end">
-            <button class="reset-btn" id="resetDefaultBtn">↺ reset to £1250 / 30d</button>
+            <button class="reset-btn" id="resetDefaultBtn">↺ reset to £100 / 30d</button>
         </div>
         <div class="footnote">
             ⚡ Fixed annual rate 39% · simple interest (no compounding) · for illustration only
