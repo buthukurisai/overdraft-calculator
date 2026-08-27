@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overdraft Calculator · 39% fixed</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: linear-gradient(145deg, #f6f9fc 0%, #e9f0f5 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            max-width: 520px;
+            width: 100%;
+            padding: 2rem 2rem 2.2rem;
+            border-radius: 48px;
+            box-shadow: 0 20px 40px -12px rgba(0, 20, 30, 0.35),
+                        0 8px 24px -6px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.2s ease;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin: 0 0 0.15rem 0;
+            color: #0b1a2b;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+        .badge-rate {
+            background: #1f2e3f;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            letter-spacing: 0.3px;
+            margin-left: 0.25rem;
+            background: #1e2b3a;
+            box-shadow: inset 0 -2px 0 #3d5064;
+        }
+        .subhead {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-top: -0.2rem;
+            margin-bottom: 2rem;
+            color: #2c3f53;
+            font-weight: 450;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding-bottom: 0.6rem;
+        }
+        .subhead span:first-child {
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+        .subhead span:last-child {
+            font-size: 0.9rem;
+            background: #dce5ed;
+            padding: 0.2rem 0.9rem;
+            border-radius: 30px;
+            color: #11212e;
+            font-weight: 500;
+        }
+        .input-group {
+            margin-bottom: 1.6rem;
+        }
+        label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            color: #1b2e40;
+            margin-bottom: 0.3rem;
+        }
+        .input-row {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 60px;
+            padding: 0.1rem 0.1rem 0.1rem 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02), inset 0 1px 4px rgba(0,0,0,0.04);
+            border: 1px solid #d9e2ec;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .input-row:focus-within {
+            border-color: #3b6a8f;
+            box-shadow: 0 0 0 4px rgba(43, 100, 150, 0.15);
+        }
+        .input-row input {
+            border: none;
+            padding: 0.9rem 0.2rem 0.9rem 0;
+            font-size: 1.2rem;
+            font-weight: 500;
+            width: 100%;
+            background: transparent;
+            outline: none;
+            color: #0a1a28;
+        }
+        .input-row input::placeholder {
+            color: #a8bccf;
+            font-weight: 400;
+            font-size: 1rem;
+        }
+        .input-row span {
+            padding: 0 1.2rem 0 0.4rem;
+            font-weight: 500;
+            color: #28475f;
+            font-size: 1.1rem;
+        }
+        .input-hint {
+            display: flex;
+            justify-content: flex-end;
+            font-size: 0.75rem;
+            color: #4d6b82;
+            margin-top: 0.3rem;
+            padding-right: 0.5rem;
+            opacity: 0.8;
+        }
+        .days-slider-area {
+            margin: 1.8rem 0 2rem;
+        }
+        .days-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 450;
+            color: #1e3346;
+            margin-bottom: 0.3rem;
+        }
+        .days-header label {
+            font-weight: 500;
+            margin-bottom: 0;
+        }
+        .days-header output {
+            background: #dce8f2;
+            padding: 0.1rem 1rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #0b212f;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            background: linear-gradient(90deg, #1f4b6e 0%, #3f7fa8 100%);
+            border-radius: 10px;
+            outline: none;
+            margin: 0.5rem 0;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 20, 30, 0.3);
+            border: 2px solid #1b4b6e;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.12);
+            background: #f0f8ff;
+        }
+        .result-panel {
+            background: #13222f;
+            border-radius: 32px;
+            padding: 1.4rem 1.8rem 1.8rem;
+            margin: 1.8rem 0 1.2rem;
+            color: #f0f7fe;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.2), 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .result-row:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .result-label {
+            font-weight: 400;
+            opacity: 0.75;
+            font-size: 0.95rem;
+        }
+        .result-value {
+            font-weight: 600;
+            font-size: 1.6rem;
+            letter-spacing: -0.02em;
+            background: rgba(255,255,255,0.04);
+            padding: 0.1rem 0.8rem;
+            border-radius: 60px;
+        }
+        .result-value small {
+            font-weight: 400;
+            font-size: 1rem;
+            opacity: 0.7;
+            margin-left: 4px;
+        }
+        .result-total {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: rgba(255, 215, 120, 0.12);
+            padding: 0.1rem 1rem;
+            border-radius: 60px;
+        }
+        .result-total small {
+            font-size: 1rem;
+            font-weight: 400;
+            opacity: 0.6;
+        }
+        .footnote {
+            font-size: 0.75rem;
+            text-align: center;
+            color: #3b5a72;
+            margin-top: 1.6rem;
+            opacity: 0.7;
+            border-top: 1px solid rgba(0,0,0,0.04);
+            padding-top: 1rem;
+        }
+        .reset-btn {
+            background: transparent;
+            border: 1px solid #b6ccdf;
+            color: #1b384e;
+            padding: 0.4rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.15s;
+            margin-top: 0.2rem;
+        }
+        .reset-btn:hover {
+            background: #d3e2f0;
+            border-color: #7c9bb8;
+        }
+        .flex-end {
+            display: flex;
+            justify-content: flex-end;
+        }
+        @media (max-width: 480px) {
+            .card { padding: 1.5rem; }
+            .result-value { font-size: 1.4rem; }
+            .result-total { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card" role="main">
+        <h1>
+            Overdraft
+            <span class="badge-rate">39%</span>
+        </h1>
+        <div class="subhead">
+            <span>fixed annual rate</span>
+            <span>⚡ daily calculation</span>
+        </div>
+
+        <!-- principal input -->
+        <div class="input-group">
+            <label for="principal">Overdraft amount</label>
+            <div class="input-row">
+                <span>£</span>
+                <input type="number" id="principal" value="1250" min="0" step="10" placeholder="e.g. 500">
+            </div>
+            <div class="input-hint">minimum £10 · whole pounds</div>
+        </div>
+
+        <!-- days slider -->
+        <div class="days-slider-area">
+            <div class="days-header">
+                <label for="daysSlider">Days overdrawn</label>
+                <output id="daysDisplay">30</output>
+            </div>
+            <input type="range" id="daysSlider" min="1" max="365" value="30" step="1">
+            <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #3a5d78; padding: 0 0.2rem;">
+                <span>1 day</span>
+                <span>365 days</span>
+            </div>
+        </div>
+
+        <!-- result panel -->
+        <div class="result-panel">
+            <div class="result-row">
+                <span class="result-label">Interest (39% p.a.)</span>
+                <span class="result-value" id="interestDisplay">£0.00</span>
+            </div>
+            <div class="result-row" style="border-bottom: 2px solid rgba(255,215,120,0.25); padding-bottom: 0.8rem; margin-bottom: 0.4rem;">
+                <span class="result-label">Total repayment</span>
+                <span class="result-value result-total" id="totalDisplay">£0.00</span>
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 0.2rem;">
+                <span style="opacity: 0.4; font-size: 0.7rem;">daily rate 0.1068%</span>
+            </div>
+        </div>
+
+        <div class="flex-end">
+            <button class="reset-btn" id="resetDefaultBtn">↺ reset to £1250 / 30d</button>
+        </div>
+        <div class="footnote">
+            ⚡ Fixed annual rate 39% · simple interest (no compounding) · for illustration only
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // DOM elements
+            const principalInput = document.getElementById('principal');
+            const daysSlider = document.getElementById('daysSlider');
+            const daysDisplay = document.getElementById('daysDisplay');
+            const interestDisplay = document.getElementById('interestDisplay');
+            const totalDisplay = document.getElementById('totalDisplay');
+            const resetBtn = document.getElementById('resetDefaultBtn');
+
+            // fixed annual rate (39%)
+            const ANNUAL_RATE = 0.39;          // 39%
+            const DAYS_IN_YEAR = 365;
+
+            // helper: format currency (GBP)
+            const formatCurrency = (value) => {
+                return '£' + value.toFixed(2);
+            };
+
+            // core calculation: returns { interest, total }
+            function calculateOverdraft(principal, days) {
+                if (principal < 0) principal = 0;
+                if (days < 0) days = 0;
+                // daily rate = annual rate / 365
+                const dailyRate = ANNUAL_RATE / DAYS_IN_YEAR;
+                const interest = principal * dailyRate * days;
+                const total = principal + interest;
+                return { interest, total };
+            }
+
+            // update UI: read values, compute, display
+            function updateResults() {
+                // read principal (if empty or NaN -> 0)
+                let principal = parseFloat(principalInput.value);
+                if (isNaN(principal) || principal < 0) principal = 0;
+                // clamp to avoid huge numbers (optional)
+                if (principal > 1e8) principal = 1e8;   // safety
+
+                const days = parseInt(daysSlider.value, 10);
+                daysDisplay.textContent = days;
+
+                const { interest, total } = calculateOverdraft(principal, days);
+
+                interestDisplay.textContent = formatCurrency(interest);
+                totalDisplay.textContent = formatCurrency(total);
+            }
+
+            // event listeners
+            principalInput.addEventListener('input', function(e) {
+                let val = parseFloat(this.value);
+                if (this.value === '') {
+                    // allow empty field; updateResults will treat as 0
+                } else if (isNaN(val) || val < 0) {
+                    // if negative or invalid, reset to 0 (but we let it show temporarily)
+                    // we'll sanitize in updateResults, but we can also clean
+                }
+                // if value starts with negative, we sanitize in updateResults
+                updateResults();
+            });
+
+            daysSlider.addEventListener('input', function() {
+                daysDisplay.textContent = this.value;
+                updateResults();
+            });
+
+            // reset to default values: principal 1250, days 30
+            function resetToDefault() {
+                principalInput.value = '100';
+                daysSlider.value = '30';
+                daysDisplay.textContent = '30';
+                updateResults();
+            }
+
+            resetBtn.addEventListener('click', resetToDefault);
+
+            // additionally, if user blurs from principal, sanitize
+            principalInput.addEventListener('blur', function() {
+                let val = parseFloat(this.value);
+                if (isNaN(val) || val < 0) {
+                    this.value = '0';
+                } else if (this.value.includes('.')) {
+                    // keep two decimals max (optional)
+                    this.value = Math.round(val * 100) / 100;
+                }
+                updateResults();
+            });
+
+            // extra: on enter key or any change, keep consistent
+            principalInput.addEventListener('change', function() {
+                let val = parseFloat(this.value);
+                if (isNaN(val) || val < 0) {
+                    this.value = '0';
+                } else {
+                    // avoid too many decimals
+                    this.value = Math.round(val * 100) / 100;
+                }
+                updateResults();
+            });
+
+            // initial render
+            resetToDefault();
+
+            // optional: if the user types something like "1e3" it parses, but we handle.
+            // also prevent scientific notation from causing issues (input number handles it)
+        })();
+    </script>
+</body>
+</html>
